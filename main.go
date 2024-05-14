@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	err := lib.Init()
+	err := lib.Handler()
 	if err != nil {
-		fmt.Println("Error initializing client: ", err)
+		fmt.Println("Error running handler: ", err)
 	}
 }
