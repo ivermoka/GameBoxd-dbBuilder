@@ -43,7 +43,7 @@ func Handler() error {
 	if err != nil {
 		return fmt.Errorf("error fetching games: %v", err)
 	}
-
+	
 	err = InsertGames(supabase, games)
 	if err != nil {
 		return fmt.Errorf("error inserting games into DB: %v", err)
@@ -57,33 +57,21 @@ func Init() (*supa.Client, error) {
 	if err := godotenv.Load(); err != nil {
 		return nil, fmt.Errorf("error loading .env file: %w", err)
 	}
-
 	supabase := supa.CreateClient(os.Getenv("API_URL"), os.Getenv("API_KEY"))
 
 	return supabase, nil
 }
 
-// type Test struct {
-// 	Created_at string `json:"created_at"`
-// }
-
-// var results []Test
-
-// row := Test {
-// 	Created_at: time.Now().Format(time.RFC3339),
-// }
-
-// err := supabase.DB.From("test").Insert(row).Execute(&results)
-// if err != nil {
-// 	return fmt.Errorf("error inserting into db: %w", err)
-// }
 
 func InsertGames(supabase *supa.Client, games []Game) error {
 	for _, game := range games {
-		err := supabase.DB.From("games").Insert(game)
+		var results []Game
+
+		err := supabase.DB.From("games").Insert(game).Execute(&results)
 		if err != nil {
-			return fmt.Errorf("error inserting game into database: %v", err)
+			return fmt.Errorf("%v", err)
 		}
+		fmt.Printf("Inserted %s\n", game.Name)
 	}
 
 	return nil
